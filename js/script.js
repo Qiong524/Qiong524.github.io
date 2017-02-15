@@ -117,9 +117,16 @@ for (var i = 0; i < count; i++) {
 }
 
 
-
+var renew = document.getElementById('renew');
 var chess = document.getElementById('chess');
 var context = chess.getContext('2d'); //取得畫布的2d空間
+
+renew.onclick = function() {
+	if(confirm("確定要重新開始嗎？")) {
+		history.go(0)
+	}
+}
+
 
 context.strokeStyle = "#BFBFBF"; //設置棋盤線樣式
 
@@ -185,7 +192,9 @@ chess.onclick = function(e) {
 				myWin[k]++;
 				computerWin[k] = 6;
 				if(myWin[k] == 5) {
-					window.alert("你贏了");
+					if(confirm("你贏了，要再玩一場嗎？")){
+						history.go(0);
+					}
 					over = true;
 				}
 			}
@@ -270,7 +279,9 @@ var computerAI = function() {
 			computerWin[k]++;
 			myWin[k] = 6;
 			if(computerWin[k] == 5) {
-				window.alert("AI贏了");
+				if(confirm("AI贏了，要再挑戰一次嗎？")){
+					history.go(0);
+				}
 				over = true;
 			}
 		}
