@@ -1,6 +1,15 @@
 
 var chessBoard = [];
 var me = true;
+var over = false;
+
+//贏法數組
+var wins = [];
+var count = 0;
+
+//贏法的統計數組
+var myWin = []; //我方
+var computerWin = []; //AI方
 
 for (var i = 0; i < 15; i++) {
 	chessBoard[i] = [];
@@ -8,6 +17,106 @@ for (var i = 0; i < 15; i++) {
 		chessBoard[i][j] = 0;
 	}
 }
+
+for (var i = 0; i < 15; i++) {
+	wins[i] = [];
+	for (var j = 0; j < 15; j++) {
+		wins[i][j] = [];
+	}
+}
+
+// //所有直線的贏法
+for (var i = 0; i < 15; i++) {
+	for (var j = 0; j < 11; j++) {
+		// wins[0][0][0] = true;
+		// wins[0][1][0] = true;
+		// wins[0][2][0] = true;
+		// wins[0][3][0] = true;
+		// wins[0][4][0] = true;
+
+		// wins[0][1][1] = true;
+		// wins[0][2][1] = true;
+		// wins[0][3][1] = true;
+		// wins[0][4][1] = true;
+		// wins[0][5][1] = true;
+		for (var k = 0; k < 5; k++) {
+			wins[i][j+k][count] = true;
+		}
+		count++;
+	}
+}
+
+//所有橫線贏法
+for (var i = 0; i < 15; i++) {
+	for (var j = 0; j < 11; j++) {
+		// wins[0][0][0] = true;
+		// wins[1][0][0] = true;
+		// wins[2][0][0] = true;
+		// wins[3][0][0] = true;
+		// wins[4][0][0] = true;
+
+		// wins[1][0][1] = true;
+		// wins[2][0][1] = true;
+		// wins[3][0][1] = true;
+		// wins[4][0][1] = true;
+		// wins[5][0][1] = true;
+		for (var k = 0; k < 5; k++) {
+			wins[j+k][i][count] = true;
+		}
+		count++;
+	}
+}
+
+//所有正斜線贏法
+for (var i = 0; i < 11; i++) {
+	for (var j = 0; j < 11; j++) {
+		// wins[0][0][0] = true;
+		// wins[1][1][0] = true;
+		// wins[2][2][0] = true;
+		// wins[3][3][0] = true;
+		// wins[4][4][0] = true;
+
+		// wins[0][1][1] = true;
+		// wins[1][2][1] = true;
+		// wins[2][3][1] = true;
+		// wins[3][4][1] = true;
+		// wins[4][5][1] = true;
+		for (var k = 0; k < 5; k++) {
+			wins[i+k][j+k][count] = true;
+		}
+		count++;
+	}
+}
+
+//所有反斜線贏法
+for (var i = 0; i < 11; i++) {
+	for (var j = 14; j > 3; j--) {
+		// wins[0][14][0] = true;
+		// wins[1][13][0] = true;
+		// wins[2][12][0] = true;
+		// wins[3][11][0] = true;
+		// wins[4][10][0] = true;
+
+		// wins[0][13][1] = true;
+		// wins[1][12][1] = true;
+		// wins[2][11][1] = true;
+		// wins[3][10][1] = true;
+		// wins[4][9][1] = true;
+		for (var k = 0; k < 5; k++) {
+			wins[i+k][j-k][count] = true;
+		}
+		count++;
+	}
+}
+
+console.log(count);  //572種贏法
+
+for (var i = 0; i < count; i++) {
+	myWin[i] = 0;
+	computerWin[i] = 0;
+}
+
+
 
 var chess = document.getElementById('chess');
 var context = chess.getContext('2d'); //取得畫布的2d空間
@@ -58,6 +167,9 @@ var oneStep = function(i, j, me) {
 }
 
 chess.onclick = function(e) {
+	if(over) {
+		return;
+	}
 	var x = e.offsetX;
 	var y = e.offsetY;
 	var i = Math.floor(x / 30); //向下取整數
@@ -70,6 +182,16 @@ chess.onclick = function(e) {
 			chessBoard[i][j] = 2;
 		}
 		me = !me;
+		for (var k = 0; k < count; k++) {
+			if(wins[i][j][k]) {
+				myWin[k]++;
+				computerWin[k] = 6;
+				if(myWin[k] == 5) {
+					window.alert("你贏了");
+					over = true;
+				}
+			}
+		}
 	}
 }
 
